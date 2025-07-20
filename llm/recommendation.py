@@ -6,13 +6,27 @@ from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+import streamlit as st
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+from langchain_core.prompts import PromptTemplate
 
+# ✅ Load API Token from Streamlit Secrets
+HUGGINGFACEHUB_API_TOKEN = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
+
+# ✅ Initialize LLM with token
 llm = HuggingFaceEndpoint(
     repo_id="mistralai/Mistral-7B-Instruct-v0.2",
-    task="conversational"
+    task="conversational",
+    huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN
 )
+
+# ✅ Wrap in Chat Model
 model = ChatHuggingFace(llm=llm)
+
+# Continue your prompt templates and chain setup...
+load_dotenv()
+HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
 parser = StrOutputParser()
 
 def generate_dataset_summary(df, target_column):
