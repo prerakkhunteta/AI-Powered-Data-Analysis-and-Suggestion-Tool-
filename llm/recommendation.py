@@ -1,4 +1,3 @@
-# llm_recommender.py
 
 import pandas as pd
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
@@ -7,10 +6,8 @@ from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 import os
 
-# 🔑 Load Hugging Face API Key
 load_dotenv()
 
-# 🔥 Initialize Hugging Face LLM
 llm = HuggingFaceEndpoint(
     repo_id="mistralai/Mistral-7B-Instruct-v0.2",
     task="conversational"
@@ -18,7 +15,6 @@ llm = HuggingFaceEndpoint(
 model = ChatHuggingFace(llm=llm)
 parser = StrOutputParser()
 
-# 📊 Dataset Summary Generator
 def generate_dataset_summary(df, target_column):
     rows, cols = df.shape
     feature_columns = [col for col in df.columns if col != target_column]
@@ -52,7 +48,7 @@ This dataset aims to predict '{target_column}'.
 """
     return summary.strip()
 
-# 📊 Predictions Summary Generator
+
 def generate_predictions_summary(model_type, predictions):
     if not isinstance(predictions, list):
         predictions = pd.Series(predictions)
@@ -76,7 +72,6 @@ def generate_predictions_summary(model_type, predictions):
 
     return summary
 
-# 🔥 Define LangChain Prompt Chain
 prompt_template = PromptTemplate(
     template="""You are an expert data analyst.
 
@@ -95,7 +90,6 @@ Based on the dataset summary and the prediction summary, generate 2-3 actionable
 
 chain = prompt_template | model | parser
 
-# 🚀 Function to Generate LLM Recommendations
 def generate_llm_recommendation(problem_statement, dataset_summary, predictions_summary):
     return chain.invoke({
         "dataset_summary": dataset_summary,
